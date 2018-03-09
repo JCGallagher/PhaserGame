@@ -2,22 +2,14 @@ var mainState = {
 
     preload: function() {
         //load graphics
-        game.load.image('player', 'assets/dwarf.jpg');
+        game.load.image('player', 'assets/player.png');
         game.load.image('block', 'assets/block.png');
-        game.load.image('baddy', 'assets/bat.jpg.png');
+        game.load.image('baddy', 'assets/baddy.png');
         game.load.image('key', 'assets/key.png');
         game.load.image('door', 'assets/door.png');
         game.load.audio('pickup', 'assets/pickup.wav');
         game.load.audio('win', 'assets/win.wav');
         
-        //load audio
-        game.load.audio('pickup', 'assts/pickup.wav');
-        game.load.audio('win', 'assets/win.wav');
-        
-        //load tilemap
-        game.load.spritesheet('tileset', 'assets/tileset.png', 50, 50);
-        game.load.tilemap('map1', 'assets/sample_map.json', null,
-                          Phaser.Tilemap.TILED_JSON);
     },
     
     create: function() {
@@ -27,7 +19,7 @@ var mainState = {
         game.physics.startSystem(Phaser.Physics.ARCADE); // start the physics engine
         
         //make maze
-        this.buildmazeFromFile(1);
+        this.buildMaze();
         
         //create player
         player=game.add.sprite(60,405,'player');
@@ -44,6 +36,10 @@ var mainState = {
         baddies.add(baddy1);
         baddies.add(baddy2);
         //game.physics.arcade.enable(baddy1);
+        
+        // create key
+        key=game.add.sprite(150,50,'key');
+        game.physics.arcade.enable(key);
         
         // sound
         keyPickup = game.add.audio('pickup');
@@ -66,9 +62,9 @@ var mainState = {
     
     update: function() {
         // set up collisions
-        game.physics.arcade.collide(player,this.layer);
+        game.physics.arcade.collide(player,maze);
         game.physics.arcade.overlap(player,baddies,this.endGame,null,this);
-        game.physics.arcade.collide(this.layer,baddies);
+        game.physics.arcade.collide(maze,baddies);
         game.physics.arcade.collide(baddies,baddies);
         game.physics.arcade.overlap(player,key,this.showExit,null,this);
         game.physics.arcade.overlap(player,door,this.winGame,null,this);
@@ -78,33 +74,6 @@ var mainState = {
         this.countDown();
 
     },
-    
-    // Mazebuilding function - creates a maze based on a file 
-    //we passed in the number for the file we want to use
-    buildmazeFromFile: function(level) {
-        //create the tilemap
-        this.map = game.add.tilemap('map'+level);
-        
-        // Add the tileset to the map
-        this.map.addTilesetImage('tileset');
-        
-        // Create the layer, by specifying the name of Tiled layer
-        this.layer = this.map.createLayer('maze/background');
-        
-        // Set the world size to match the size of the layer
-        this.layer.resizeWorld();
-        
-        // Enable collision with the first element of our tileset (the wall)
-        this.map.setCollision(1);
-        
-        // create key 
-        var keys = game.add.physicsGroup();
-        this.map.createFromObjects('objects', 'key', 'tileset', 4, true, false, keys);
-        key = keys.getFirstExists();
-        game.physics.arcade.enable(key);
-        
-    }, // End buildmazeFromFile()
-    
     
     buildMaze: function(){
         // make maze a group of objects

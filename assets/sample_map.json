@@ -25,8 +25,8 @@
                  "type":"",
                  "visible":true,
                  "width":50,
-                 "x":152.333333333333,
-                 "y":151.666666666667
+                 "x":151,
+                 "y":101
                 }, 
                 {
                  "gid":4,
@@ -39,6 +39,54 @@
                  "width":50,
                  "x":400.333333333333,
                  "y":150.333333333333
+                }, 
+                {
+                 "gid":2,
+                 "height":50,
+                 "id":5,
+                 "name":"player",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":50,
+                 "x":49.6666666666667,
+                 "y":451.666666666667
+                }, 
+                {
+                 "gid":3,
+                 "height":50,
+                 "id":6,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":50,
+                 "x":49.6666666666667,
+                 "y":101
+                }, 
+                {
+                 "gid":3,
+                 "height":50,
+                 "id":7,
+                 "name":"baddy2",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":50,
+                 "x":401.666666666667,
+                 "y":450.333333333333
+                }, 
+                {
+                 "gid":3,
+                 "height":50,
+                 "id":8,
+                 "name":"baddy1",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":50,
+                 "x":49.6666666666667,
+                 "y":102.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -46,7 +94,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":5,
+ "nextobjectid":11,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2018.02.14",
