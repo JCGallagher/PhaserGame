@@ -32,7 +32,7 @@
         {
          "columns":3,
          "firstgid":1,
-         "image":"Tiled\/Tiled\/examples\/tileset.png",
+         "image":"tileset.png",
          "imageheight":150,
          "imagewidth":150,
          "margin":0,
