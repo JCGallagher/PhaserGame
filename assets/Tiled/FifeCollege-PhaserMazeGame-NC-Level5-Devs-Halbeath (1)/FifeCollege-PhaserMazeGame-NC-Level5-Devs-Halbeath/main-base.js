@@ -2,22 +2,14 @@ var mainState = {
 
     preload: function() {
         //load graphics
-        game.load.image('player', 'assets/dwarf.jpg');
+        game.load.image('player', 'assets/player.png');
         game.load.image('block', 'assets/block.png');
-        game.load.image('baddy', 'assets/bat.jpg.png');
+        game.load.image('baddy', 'assets/baddy.png');
         game.load.image('key', 'assets/key.png');
         game.load.image('door', 'assets/door.png');
         game.load.audio('pickup', 'assets/pickup.wav');
         game.load.audio('win', 'assets/win.wav');
         
-        //load audio
-        game.load.audio('pickup', 'assts/pickup.wav');
-        game.load.audio('win', 'assets/win.wav');
-        
-        //load tilemap
-        game.load.spritesheet('tileset', 'assets/tileset.png', 50, 50);
-        game.load.tilemap('map1', 'assets/sample_map.json', null,
-                          Phaser.Tilemap.TILED_JSON);
     },
     
     create: function() {
@@ -27,11 +19,35 @@ var mainState = {
         game.physics.startSystem(Phaser.Physics.ARCADE); // start the physics engine
         
         //make maze
-        this.buildmazeFromFile(1);
-                
+        this.buildMaze();
+        
+        //create player
+        player=game.add.sprite(60,405,'player');
+        game.physics.arcade.enable(player);
+        //game.camera.follow(player);
+        
+        baddies = game.add.group();
+        baddies.enableBody = true; // add physics to the maze
+        
+        // create baddy
+        baddy1=game.add.sprite(60,60,'baddy');
+        baddy2=game.add.sprite(310,410,'baddy');
+        
+        baddies.add(baddy1);
+        baddies.add(baddy2);
+        //game.physics.arcade.enable(baddy1);
+        
+        // create key
+        key=game.add.sprite(150,50,'key');
+        game.physics.arcade.enable(key);
+        
         // sound
         keyPickup = game.add.audio('pickup');
         winGame = game.add.audio('win');
+        
+        //create door
+        door=game.add.sprite(400,100,'door');
+        game.physics.arcade.enable(door);
         
         timeLabel = game.add.text(300,10, "TIME: "+ timeLeft,{ font: '12px Arial', fill: '#ffffff', align: 'left' });
         //timeLabel.fixedToCamera=true;
@@ -46,10 +62,10 @@ var mainState = {
     
     update: function() {
         // set up collisions
-        game.physics.arcade.collide(player,this.layer);
+        game.physics.arcade.collide(player,maze);
         game.physics.arcade.overlap(player,baddies,this.endGame,null,this);
-        game.physics.arcade.collide(this.layer,baddies);
-        //game.physics.arcade.collide(baddies,baddies);
+        game.physics.arcade.collide(maze,baddies);
+        game.physics.arcade.collide(baddies,baddies);
         game.physics.arcade.overlap(player,key,this.showExit,null,this);
         game.physics.arcade.overlap(player,door,this.winGame,null,this);
 
@@ -58,51 +74,6 @@ var mainState = {
         this.countDown();
 
     },
-    
-    // Mazebuilding function - creates a maze based on a file 
-    //we passed in the number for the file we want to use
-    buildmazeFromFile: function(level) {
-        //create the tilemap
-        this.map = game.add.tilemap('map'+level);
-        
-        // Add the tileset to the map
-        this.map.addTilesetImage('tileset');
-        
-        // Create the layer, by specifying the name of Tiled layer
-        this.layer = this.map.createLayer('maze/background');
-        
-        // Set the world size to match the size of the layer
-        this.layer.resizeWorld();
-        
-        // Enable collision with the first element of our tileset (the wall)
-        this.map.setCollision(1);
-        
-        // create key 
-        var keys = game.add.physicsGroup();
-        this.map.createFromObjects('objects', 'key', 'tileset', 4, true, false, keys);
-        key = keys.getFirstExists();
-        game.physics.arcade.enable(key);
-        
-        //create player
-         var players = game.add.physicsGroup();
-        this.map.createFromObjects('objects', 'player', 'tileset', 1, true, false, players);
-        player = players.getFirstExists();
-        game.physics.arcade.enable(player);
-        //game.camera.follow(player);
-        
-        // create baddy
-         baddies = game.add.physicsGroup();
-        this.map.createFromObjects('objects', 'enemy', 'tileset', 2, true, false, baddies);
-
-        
-        //create door
-          var doors = game.add.physicsGroup();
-        this.map.createFromObjects('objects', 'door', 'tileset', 3, true, false, doors);
-        door = doors.getFirstExists();
-        game.physics.arcade.enable(door);
-        
-    }, // End buildmazeFromFile()
-    
     
     buildMaze: function(){
         // make maze a group of objects
@@ -175,20 +146,31 @@ var mainState = {
     },
     
     moveBaddy: function(){
-        baddies.forEach( function (baddy){
-          if (player.x>baddy.x){
-            baddy.body.velocity.x=80;
-        }else if (player.x<baddy.x){
-            baddy.body.velocity.x=-80;
+        
+        if (player.x>baddy1.x){
+            baddy1.body.velocity.x=80;
+        }else if (player.x<baddy1.x){
+            baddy1.body.velocity.x=-80;
         }
         
-        if (player.y>baddy.y){
-            baddy.body.velocity.y=80;
-        }else if (player.y<baddy.y){
-            baddy.body.velocity.y=-80;
+        if (player.y>baddy1.y){
+            baddy1.body.velocity.y=80;
+        }else if (player.y<baddy1.y){
+            baddy1.body.velocity.y=-80;
         }
-      } ); // end baddies.forEach
         
+        if (player.x>baddy2.x){
+            baddy2.body.velocity.x=100;
+        }else if (player.x<baddy2.x){
+            baddy2.body.velocity.x=-100;
+        }
+        
+        if (player.y>baddy2.y){
+            baddy2.body.velocity.y=100;
+        }else if (player.y<baddy2.y){
+            baddy2.body.velocity.y=-100;
+        }
+
     },
     
     endGame: function(){
@@ -210,9 +192,8 @@ var mainState = {
             var messageLabel = game.add.text(100, 250, 'YOU ESCAPED!',{ font: '40px Arial', fill: '#ff0000' });
             messageLabel.fixedToCamera=true;
             player.kill();
-        baddies.forEach( function (baddy){
-            baddy.kill();
-      } ); // end baddies.forEach
+           baddy1.kill();
+            baddy2.kill();
             gameOver=true;
         }
     },
