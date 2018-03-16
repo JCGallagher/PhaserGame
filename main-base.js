@@ -91,6 +91,20 @@ var mainState = {
         key = keys.getFirstExists();
         game.physics.arcade.enable(key);
         
+        // key animation
+        var keyTween = game.add.tween(key.scale);
+        keyTween.to({x: 1.25, y: 1.25}, 500); // scaled up to 1.25 over 500 ms
+        keyTween.to({x: 1, y: 1}, 500); // scaled down to 1 over 500 ms
+        
+        keyTween.easing(Phaser.Easing.Quadratic.InOut);
+        keyTween.loop(); // loop this tween till collected
+        keyTween.start(); // start tween 
+        // change the key's anchor point so the tween looks better
+        key.anchor.x = 0.5;
+        key.anchor.y = 0.5;
+        key.x += key.width/2;
+        key.y += key.height/2;
+        
         //create player
          var players = game.add.physicsGroup();
         this.map.createFromObjects('objects', 'player', 'tileset', 1, true, false, players);
