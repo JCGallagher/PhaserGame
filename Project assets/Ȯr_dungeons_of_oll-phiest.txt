@@ -1,0 +1,24 @@
+
+//Mob list\\
+
+blood hounds - ferral dogs that have been corupted and twisted with disease.
+rats - black rats that have evolved to the harsh enviornment.
+skeletons - dammed and fallen warriors that have been twisted by black magic to plague the tracks of travelers.
+
+goblins(story plot twist)
+list of goblin tribe = 
+#1 - goblin king / he is the boss for the game.
+#2.1 - mounted goblins / they are armored goblins that rid apon a mount.
+#2.2 - armoured goblins / they are armoured goblins that have lost their mounts.
+#3 - theif / these goblins love to steal your gold (points or score).
+#4 - bombadier / these light pyromaniacs love to do nothing but throw a volley of explosive bombs from a distance.
+
+//// story line \\\\\
+
+pro-log - A fierce and fiery battle is underway, the clanging of steal echos, the bone scratch screams from a monstrous roar are heard from miles around brave fallen knights litter the battle field.
+The only Dwarf standing stares at the piercing gaze of Teine the colossal dragon his body batter and tarnished with arrows and axes
+the Warrior standing with his golden axe in both hands constricts to take a mighty swing for the dargon the dragon inhaling to let out 
+a destructive and blazing inferno of red hot fire. suddenly as both parties release their attacks the screen fades to black.
+
+
+A whole year after the voracious battle between the dragon Teine and the knights of the kingdom of beinn. 
