@@ -255,7 +255,7 @@ var mainState = {
 
 var game = new Phaser.Game(500, 500, Phaser.AUTO, 'gameDiv');
 var player, baddy, key, door,cursors,maze,baddies,gameOver,numLevels;
-var timeLeft=30;
+var timeLeft=40;
 var frameCount=0;
 
 game.state.add('main', mainState);
