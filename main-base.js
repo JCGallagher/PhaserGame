@@ -98,6 +98,11 @@ var mainState = {
         game.physics.arcade.enable(player);
         game.camera.follow(player);
         
+        //player animation
+        player.animations.add('run', [1, 5], 10, true);
+        player.animations.add('stand', [1], 10, true);
+        player.animations.play('stand');
+        
         // create baddy
          baddies = game.add.physicsGroup();
         this.map.createFromObjects('objects', 'enemy', 'tileset', 2, true, false, baddies);
@@ -164,8 +169,13 @@ var mainState = {
             
             player.body.velocity.y=0;
         }
-        
-        
+        // animation section 
+        if (player.body.velocity.x != 0 || player.body.velocity.y != 0){
+                player.animations.play('run');
+        }
+        else{
+                player.animations.play('stand');
+        }
     },
     
     moveBaddy: function(){
