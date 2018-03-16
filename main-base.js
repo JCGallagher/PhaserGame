@@ -106,7 +106,12 @@ var mainState = {
         // create baddy
          baddies = game.add.physicsGroup();
         this.map.createFromObjects('objects', 'enemy', 'tileset', 2, true, false, baddies);
-
+        
+        //baddy animation
+        baddies.forEach(function(enemy) {
+            enemy.animations.add('chase', [2, 6], 10, true);
+            enemy.animations.play('chase');
+        });
         
         //create door
           var doors = game.add.physicsGroup();
