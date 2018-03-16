@@ -2,9 +2,9 @@ var mainState = {
 
     preload: function() {
         //load graphics
-        game.load.image('player', 'assets/dwarf.jpg');
+        game.load.image('player', 'assets/player.png');
         game.load.image('block', 'assets/block.png');
-        game.load.image('baddy', 'assets/bat.jpg.png');
+        game.load.image('baddy', 'assets/baddy.png');
         game.load.image('key', 'assets/key.png');
         game.load.image('door', 'assets/door.png');
         game.load.audio('pickup', 'assets/pickup.wav');
@@ -18,9 +18,9 @@ var mainState = {
         game.load.spritesheet('tileset', 'assets/tileset.png', 50, 50);
         game.load.tilemap('map1', 'assets/sample_map.json', null,
                           Phaser.Tilemap.TILED_JSON);
-        game.load.tilemap('map2', 'assets/sample_map_2.json', null,
+        game.load.tilemap('map3', 'assets/sample_map_3.json', null,
                           Phaser.Tilemap.TILED_JSON);
-        numLevels = 2 ;
+        numLevels = 3 ;
     },
     
     create: function() {
@@ -31,7 +31,7 @@ var mainState = {
         
         //make maze - 
         if (this.currentLevel == null)
-            this.currentLevel = 1;
+            this.currentLevel = 3;
         this.buildmazeFromFile(this.currentLevel);
         
         
@@ -41,6 +41,7 @@ var mainState = {
         winGame = game.add.audio('win');
         
         timeLabel = game.add.text(300,10, "TIME: "+ timeLeft,{ font: '12px Arial', fill: '#ffffff', align: 'left' });
+        timeLabel.fixedToCamera = true;
         //timeLabel.fixedToCamera=true;
             
         // initialise keyboard cursors
@@ -95,7 +96,7 @@ var mainState = {
         this.map.createFromObjects('objects', 'player', 'tileset', 1, true, false, players);
         player = players.getFirstExists();
         game.physics.arcade.enable(player);
-        //game.camera.follow(player);
+        game.camera.follow(player);
         
         // create baddy
          baddies = game.add.physicsGroup();
@@ -149,30 +150,16 @@ var mainState = {
     
     movePlayer: function(){
         if (cursors.left.isDown){
-             if (player.x>0){
                  player.body.velocity.x=-200;
-             }
-                       
         }else if (cursors.right.isDown){
-            if (player.x<460){
                 player.body.velocity.x=200;
-            }
-            
         }else{
             player.body.velocity.x=0;
         }
-        
-        
         if (cursors.up.isDown){
-             if (player.y>0){
                  player.body.velocity.y=-200;
-             }
-                       
         }else if (cursors.down.isDown){
-            if (player.y<460){
                 player.body.velocity.y=200;
-            }
-            
         }else{
             
             player.body.velocity.y=0;
