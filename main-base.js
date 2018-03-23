@@ -34,6 +34,11 @@ var mainState = {
             this.currentLevel = 3;
         this.buildmazeFromFile(this.currentLevel);
         
+        //light and shadow
+        this.shadowTexture = game.add.bitmapData(game.width, game.height);
+        var lightSprite = game.add.image(0, 0, this.shadowTexture);
+        lightSprite.fixedToCamera = true;
+        lightSprite.blendMode = Phaser.blendModes.MULTIPLY;
         
                 
         // sound
@@ -58,13 +63,19 @@ var mainState = {
         game.physics.arcade.overlap(player,baddies,this.endGame,null,this);
         game.physics.arcade.collide(this.layer,baddies);
         //game.physics.arcade.collide(baddies,baddies);
-        game.physics.arcade.overlap(player,key,this.showExit,null,this);
+        game.physics.arcade.overlap(player,this.items,this.collectItem,null,this);
         game.physics.arcade.overlap(player,door,this.winGame,null,this);
 
         this.movePlayer();
         this.moveBaddy();
         this.countDown();
-
+     
+        //update shadow
+        // you can change the radius (100) to be larger or smaller
+        this.updateShadowTexture({x: player.x + player.width/2 - game.camera.x, 
+                                  y: player.y + player.height/2 - game.camera.y}, 
+                                 100);
+        
     },
     
     // Mazebuilding function - creates a maze based on a file 
@@ -85,11 +96,17 @@ var mainState = {
         // Enable collision with the first element of our tileset (the wall)
         this.map.setCollision(1);
         
+        //this is the item system 
+        // create an array, to hold our current items (held item)
+        this.inventory = [];
+        //create a group to hold items in the game world
+        this.items = game.add.physicsGroup();
+        
         // create key 
-        var keys = game.add.physicsGroup();
-        this.map.createFromObjects('objects', 'key', 'tileset', 4, true, false, keys);
-        key = keys.getFirstExists();
+        this.map.createFromObjects('objects', 'key', 'tileset', 4, true, false, this.items);
+        key = this.items.getByName('key');
         game.physics.arcade.enable(key);
+        key.collectSound = game.add.audio('pickup');
         
         // key animation
         var keyTween = game.add.tween(key.scale);
@@ -135,42 +152,6 @@ var mainState = {
         
     }, // End buildmazeFromFile()
     
-    
-    buildMaze: function(){
-        // make maze a group of objects
-        maze = game.add.group();
-        maze.enableBody = true; // add physics to the maze
-        maze.setAll('body.immovable', true); // make the maze objects immovable
-        
-        
-        var blockArray = [
-            [1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,1,1,0,0,0,1],
-            [1,0,1,0,1,0,0,1,0,1],
-            [1,0,1,0,1,0,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,0,1,1,1,0,1],
-            [1,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,1,0,1,1,0,1],
-            [1,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,1,1,1,1,1,1]
-            ];
-        
-        for (var r=0;r<blockArray.length;r++){
-            
-            for (var c=0; c<blockArray[r].length;c++){
-                console.log("Column",c);
-                console.log("Row",r);
-                if(blockArray[r][c]==1){
-                   var block=game.add.sprite(c*50,r*50,'block');
-                    maze.add(block);
-                }
-            }
-            
-        }
-        
-        maze.setAll('body.immovable', true);
-    },
     
     movePlayer: function(){
         if (cursors.left.isDown){
@@ -227,10 +208,11 @@ var mainState = {
     },
     
     winGame: function(){
-        if(gotKey==true){
+        if(this.hasItem('key') == true){
             
             if (this.currentLevel == numLevels){  
                 winGame.play();
+                
                 // display message
                 var messageLabel = game.add.text(100, 250, 'YOU ESCAPED!',{ font: '40px Arial', fill: '#ff0000' });
                 messageLabel.fixedToCamera=true;
@@ -266,8 +248,43 @@ var mainState = {
         
 
     },
-
     
+    updateShadowTexture: function(position, radius)
+    {
+        //Draw the shadow
+        //decrease RGB number to make the shadow darker
+        // 0 will be black
+        this.shadowTexture.context.fillStyle = 'rgb(100,100,100)';
+        this.shadowTexture.context.fillRect(0, 0, game.width, game.height);
+        
+        //Draw curcle of light
+        this.shadowTexture.context.beginPath();
+        //you could change fill colour from white to a darker colour back and forth over time with radius,
+        //to simulate "flickering"
+        this.shadowTexture.context.fillStyle = 'rgb(255,255,255)';
+        this.shadowTexture.context.arc(position.x, position.y, radius, 0, Math.PI*2);
+        this.shadowTexture.context.fill();
+        // Says texture should be updated
+        this.shadowTexture.dirty = true;
+   
+    },
+    
+    // Adds an item to inventory and delets the sprite,
+    collectItem: function(player, item) {
+        this.inventory.push(item.name);
+        
+        //play collection sound if it is present on item,
+        if (item.collectionSound ! = null){
+            item.collectionSound.play();
+        }
+        
+        item.kill();
+    },
+    
+    // Checks if an item of this name is in our inventory
+    hasItem: function(itemName) {
+        return this.inventory.indexOf(itemName) > -1;
+    }
     
 };
 
